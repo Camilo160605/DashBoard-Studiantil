@@ -1,59 +1,46 @@
-# StudentDashboard
+# Kanban Frontend (Angular 20)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
+SPA en Angular que consume el backend .NET del tablero Kanban. Incluye autenticación con JWT, tablero dinámico con drag & drop y descargas en PDF/Excel.
 
-## Development server
+## Requisitos previos
+- Node.js 20.19 o superior (recomendado por Angular 20).
+- Backend corriendo en `http://localhost:5031` (o actualiza `src/environments/environment*.ts`).
 
-To start a local development server, run:
+## Configuración del entorno
+1. Instala dependencias:
+   ```bash
+   npm install
+   ```
+2. Verifica/ajusta la URL del backend en:
+   - `src/environments/environment.development.ts` (modo `ng serve`).
+   - `src/environments/environment.ts` (build producción).
 
+## Ejecutar en desarrollo
 ```bash
+npm start
+# ó
 ng serve
 ```
+La app correrá en `http://localhost:4200`. Usa el usuario semilla `admin@example.com / Pass123$` para iniciar sesión, obtener un JWT y acceder al tablero.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Funcionalidades principales
+- **Login**: formulario reactivo, almacenamiento del token en `localStorage`, refresco automático al expirar.
+- **Gestión de tableros**: listado lateral, creación rápida y selección automática.
+- **Tablero Kanban**:
+  - CRUD de columnas y tarjetas (formularios inline).
+  - Drag & drop con Angular CDK; calcula `prevPos/nextPos` y llama a `/cards/move`.
+  - Indicadores de estado/mensajes de error.
+- **Exportaciones**: botones para bajar PDF o Excel vía `/export/{pdf|excel}`.
+- **Seguridad**: `AuthGuard` bloquea `/dashboard`, interceptor agrega `Authorization: Bearer` y expulsa al usuario en 401.
 
-## Code scaffolding
+## Pruebas manuales sugeridas
+1. Inicia sesión.
+2. Crea un tablero nuevo y agrega columnas "To Do", "In Progress", "Done".
+3. Crea tarjetas dentro de cada columna, arrástralas entre columnas y observa que el backend mantiene el orden.
+4. Descarga el PDF/Excel para validar el contenido.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+## Build de producción
 ```bash
-ng generate component component-name
+ng build --configuration production
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Los artefactos se generan en `dist/student-dashboard/browser`. Sirve esa carpeta detrás de cualquier CDN o reverse proxy apuntando al backend en `/api/v1`.

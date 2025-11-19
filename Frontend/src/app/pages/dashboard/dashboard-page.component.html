@@ -1,0 +1,93 @@
+<section class="dashboard">
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <h2>Tus tableros</h2>
+      <button class="ghost" (click)="logout()">Cerrar sesión</button>
+    </div>
+
+    <div class="sidebar__list" *ngIf="boards().length; else noBoards">
+      <button
+        *ngFor="let board of boards()"
+        type="button"
+        [class.active]="board.id === selectedBoardId()"
+        (click)="selectBoard(board.id)"
+      >
+        {{ board.name }}
+      </button>
+    </div>
+    <ng-template #noBoards>
+      <p class="empty">Todavía no hay tableros. Crea uno nuevo.</p>
+    </ng-template>
+
+    <form class="sidebar__form" [formGroup]="createBoardForm" (ngSubmit)="createBoard()">
+      <label>Nuevo tablero</label>
+      <input type="text" formControlName="name" placeholder="Sprint Agosto" />
+      <button type="submit">Crear</button>
+    </form>
+  </aside>
+
+  <section class="board">
+    <header class="board__header" *ngIf="currentBoard(); else emptyBoard">
+      <div>
+        <h1>{{ currentBoard()!.name }}</h1>
+        <p>{{ columns().length }} columnas · {{ currentBoard()!.cards.length }} tarjetas</p>
+      </div>
+      <div class="board__actions">
+        <button class="ghost" type="button" (click)="selectBoard(currentBoard()!.id)">Actualizar</button>
+        <button class="ghost" type="button" (click)="download('pdf')">PDF</button>
+        <button class="ghost" type="button" (click)="download('excel')">Excel</button>
+      </div>
+    </header>
+
+    <ng-template #emptyBoard>
+      <div class="empty">
+        <p>No se ha seleccionado ningún tablero.</p>
+      </div>
+    </ng-template>
+
+    <p class="message" *ngIf="message()">{{ message() }}</p>
+    <p class="message" *ngIf="isLoadingBoard()">Cargando tablero…</p>
+
+    <form class="column-form" [formGroup]="createColumnForm" (ngSubmit)="createColumn()">
+      <input type="text" formControlName="name" placeholder="Nueva columna" />
+      <button type="submit">Agregar columna</button>
+    </form>
+
+    <section class="columns" *ngIf="columns().length; else noColumns">
+      <article
+        class="column"
+        *ngFor="let column of columns(); trackBy: trackColumn"
+        [attr.data-column]="column.id"
+      >
+        <h3>{{ column.name }}</h3>
+        <div
+          class="cards"
+          cdkDropList
+          [cdkDropListConnectedTo]="dropListIds()"
+          [cdkDropListData]="column.cards"
+          [id]="'column-' + column.id"
+          (cdkDropListDropped)="dropCard($event, column)"
+        >
+          <div class="card" *ngFor="let card of column.cards; trackBy: trackCard" cdkDrag>
+            <h4>{{ card.title }}</h4>
+            <p *ngIf="card.description">{{ card.description }}</p>
+            <footer>
+              <span *ngIf="card.assigneeEmail">👤 {{ card.assigneeEmail }}</span>
+              <span *ngIf="card.dueDate">📅 {{ card.dueDate | date:'dd/MM/yyyy' }}</span>
+            </footer>
+          </div>
+          <p class="card empty" *ngIf="!column.cards.length">Sin tarjetas</p>
+        </div>
+
+        <form class="card-form" [formGroup]="cardForm(column.id)" (ngSubmit)="createCard(column)">
+          <input type="text" formControlName="title" placeholder="Nueva tarjeta" />
+          <textarea rows="2" formControlName="description" placeholder="Descripción"></textarea>
+          <button type="submit">Crear tarjeta</button>
+        </form>
+      </article>
+    </section>
+    <ng-template #noColumns>
+      <div class="empty">Agrega columnas para comenzar a planear.</div>
+    </ng-template>
+  </section>
+</section>
