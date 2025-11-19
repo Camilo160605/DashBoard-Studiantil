@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "XKVUcN87EVU=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\dienu\\OneDrive\\Desktop\\Proyectos\\Universidad\\DashBoard-Studiantil\\Backend\\src\\Domain\\Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dienu\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.22\\microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\dienu\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.22\\microsoft.windowsdesktop.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\dienu\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.22\\microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
+  "logs": []
+}
